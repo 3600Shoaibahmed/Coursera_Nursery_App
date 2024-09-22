@@ -1,38 +1,35 @@
 // src/components/CheckoutPage.js
 import React from 'react';
 import { List, Button, Typography, Avatar } from 'antd';
+import { useDispatch, useSelector } from 'react-redux';
+import { addItem, removeItem } from '../redux/CartSlice';
 
 const { Title } = Typography;
 
-const CheckoutPage = ({ cart, setCart }) => {
+const CheckoutPage = () => {
+  const dispatch = useDispatch();
+  const cart = useSelector((state) => state.cart);
+
   // Calculate total price of all items in the cart
   const totalPrice = cart.reduce((total, product) => total + product.price * product.quantity, 0);
 
   const increaseQuantity = (productId) => {
-    setCart((prevCart) =>
-      prevCart.map((item) =>
-        item.id === productId ? { ...item, quantity: item.quantity + 1 } : item
-      )
-    );
+    dispatch(addItem({ id: productId })); // Dispatch addItem to increase quantity
   };
 
   const decreaseQuantity = (productId) => {
-    setCart((prevCart) =>
-      prevCart.map((item) => {
-        if (item.id === productId) {
-          if (item.quantity === 1) {
-            return null; // Mark for removal
-          } else {
-            return { ...item, quantity: item.quantity - 1 };
-          }
-        }
-        return item;
-      }).filter(item => item) // Filter out nulls
-    );
+    const existingProduct = cart.find(item => item.id === productId);
+    if (existingProduct) {
+      if (existingProduct.quantity === 1) {
+        dispatch(removeItem(productId)); // Remove if quantity is 1
+      } else {
+        dispatch(addItem({ id: productId })); // Reduce quantity by adding again
+      }
+    }
   };
 
   const removeProduct = (productId) => {
-    setCart((prevCart) => prevCart.filter((item) => item.id !== productId));
+    dispatch(removeItem(productId)); // Dispatch removeItem to remove product
   };
 
   if (cart.length === 0) {

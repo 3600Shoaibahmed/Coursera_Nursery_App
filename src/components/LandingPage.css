@@ -1,0 +1,51 @@
+.landing-page {
+    position: relative;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start; /* Align content to the top */
+}
+
+.landing-page::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: url('C:/Users/Asus/OneDrive/Desktop/datainn/Nursery_app/nursery-plants-shopping/public/images/plant-greenhouse-fern-green.jpg');
+    background-size: cover;
+    background-position: center;
+    filter: blur(2px); /* Apply blur effect to the background */
+    z-index: 0; /* Place behind the content */
+}
+
+.landing-page::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.3); /* Optional: Add overlay for better readability */
+    z-index: 0; /* Place behind the content but above the background */
+}
+
+.landing-content {
+    position: relative;
+    z-index: 1; /* Ensure the content is above the background */
+    text-align: center;
+    color: rgb(24, 209, 101);
+    background-color: rgb(63, 57, 57); /* Background color for the box */
+    padding: 20px;
+    border-radius: 10px; /* Rounded corners for the box */
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2); /* Box shadow for a subtle effect */
+    max-width: 600px; /* Limit the width of the content box */
+    width: 90%; /* Ensure responsiveness */
+    margin-top: 0; /* Remove any default margin */
+}
+
+h1{
+    font-weight: 700;
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+}

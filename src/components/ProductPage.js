@@ -1,6 +1,8 @@
 // src/components/ProductsPage.js
 import React from 'react';
 import { Card, Button, Row, Col, Badge, List, Typography } from 'antd';
+import { useDispatch, useSelector } from 'react-redux';
+import { addItem, removeItem } from '../redux/CartSlice';
 import { Link } from 'react-router-dom';
 
 const { Title } = Typography;
@@ -14,33 +16,16 @@ const products = [
   { id: 6, name: 'Fern', price: 30, image: 'fern.jpg' }
 ];
 
-const ProductsPage = ({ cart, setCart }) => {
-  const addToCart = (product) => {
-    setCart((prevCart) => {
-      const existingProduct = prevCart.find((item) => item.id === product.id);
-      if (existingProduct) {
-        return prevCart.map((item) =>
-          item.id === product.id ? { ...item, quantity: item.quantity + 1 } : item
-        );
-      } else {
-        return [...prevCart, { ...product, quantity: 1 }];
-      }
-    });
+const ProductsPage = () => {
+  const dispatch = useDispatch();
+  const cart = useSelector((state) => state.cart);
+
+  const handleAddToCart = (product) => {
+    dispatch(addItem(product));
   };
 
-  const removeFromCart = (productId) => {
-    setCart((prevCart) => 
-      prevCart.map(item => {
-        if (item.id === productId) {
-          if (item.quantity === 1) {
-            return { ...item, quantity: 0 }; // Mark for removal (if needed)
-          } else {
-            return { ...item, quantity: item.quantity - 1 };
-          }
-        }
-        return item;
-      }).filter(item => item.quantity > 0) // Filter out items with quantity 0
-    );
+  const handleRemoveFromCart = (productId) => {
+    dispatch(removeItem(productId));
   };
 
   return (
@@ -50,12 +35,18 @@ const ProductsPage = ({ cart, setCart }) => {
           <Col span={8} key={product.id}>
             <Card
               hoverable
-              cover={<img alt={product.name} src={`/images/${product.image}`} style={{ height: '200px', objectFit: 'cover' }} />}
+              cover={
+                <img
+                  alt={product.name}
+                  src={`/images/${product.image}`}
+                  style={{ height: '200px', objectFit: 'cover' }}
+                />
+              }
               actions={[
                 <Badge count={cart.find(item => item.id === product.id)?.quantity || 0}>
-                  <Button type="primary" onClick={() => addToCart(product)}>Add to Cart</Button>
+                  <Button type="primary" onClick={() => handleAddToCart(product)}>Add to Cart</Button>
                 </Badge>,
-                <Button type="danger" onClick={() => removeFromCart(product.id)}>
+                <Button type="danger" onClick={() => handleRemoveFromCart(product.id)}>
                   Remove from Cart
                 </Button>
               ]}
@@ -81,9 +72,13 @@ const ProductsPage = ({ cart, setCart }) => {
         <p>No items selected yet.</p>
       )}
 
-      <Link to="/checkout">
-        <Button type="primary" size="large" style={{ marginTop: '20px' }}>Go to Checkout</Button>
-      </Link>
+      {cart.length > 0 && (
+        <Link to="/checkout">
+          <Button type="primary" size="large" style={{ marginTop: '20px' }}>
+            Go to Checkout
+          </Button>
+        </Link>
+      )}
     </div>
   );
 };
